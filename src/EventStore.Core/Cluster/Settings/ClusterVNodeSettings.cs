@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
@@ -130,7 +129,8 @@ namespace EventStore.Core.Cluster.Settings
                                     bool betterOrdering = false,
                                     int readerThreadsCount = 4,
                                     bool alwaysKeepScavenged = false,
-                                    bool gossipOnSingleNode = false)
+                                    bool gossipOnSingleNode = false,
+                                    bool useHttps = false)
         {
             Ensure.NotEmptyGuid(instanceId, "instanceId");
             Ensure.NotNull(internalTcpEndPoint, "internalTcpEndPoint");
@@ -158,7 +158,7 @@ namespace EventStore.Core.Cluster.Settings
             NodeInfo = new VNodeInfo(instanceId, debugIndex,
                                      internalTcpEndPoint, internalSecureTcpEndPoint,
                                      externalTcpEndPoint, externalSecureTcpEndPoint,
-                                     internalHttpEndPoint, externalHttpEndPoint);
+                                     internalHttpEndPoint, externalHttpEndPoint, useHttps);
             GossipAdvertiseInfo = gossipAdvertiseInfo;
             IntHttpPrefixes = intHttpPrefixes;
             ExtHttpPrefixes = extHttpPrefixes;
@@ -219,7 +219,6 @@ namespace EventStore.Core.Cluster.Settings
             ReaderThreadsCount = readerThreadsCount;
             AlwaysKeepScavenged = alwaysKeepScavenged;
         }
-
 
         public override string ToString()
         {

@@ -46,6 +46,8 @@ namespace EventStore.ClusterNode
         public int ExtSecureTcpPortAdvertiseAs { get; set; }
         [ArgDescription(Opts.ExternalSecureTcpPortDescr, Opts.InterfacesGroup)]
         public int ExtSecureTcpPort { get; set; }
+        [ArgDescription(Opts.UseHttpsDescr, Opts.InterfacesGroup)]
+        public bool UseHttps { get; set; }
 
         [ArgDescription(Opts.ExternalIpAdvertiseAsDescr, Opts.InterfacesGroup)]
         public IPAddress ExtIpAdvertiseAs { get; set; }
@@ -308,6 +310,7 @@ namespace EventStore.ClusterNode
             DisableScavengeMerging = Opts.DisableScavengeMergeDefault;
             ScavengeHistoryMaxAge = Opts.ScavengeHistoryMaxAgeDefault;
             GossipOnExt = Opts.GossipOnExtDefault;
+            UseHttps = Opts.UseHttpsDefault;
             StatsOnExt = Opts.StatsOnExtDefault;
             AdminOnExt = Opts.AdminOnExtDefault;
             GossipIntervalMs = Opts.GossipIntervalMsDefault;

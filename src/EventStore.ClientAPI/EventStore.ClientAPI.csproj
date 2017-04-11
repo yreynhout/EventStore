@@ -93,6 +93,7 @@
     <Compile Include="PersistentSubscriptionNakEventAction.cs" />
     <Compile Include="PersistentSubscriptionSettings.cs" />
     <Compile Include="PersistentSubscriptionSettingsBuilder.cs" />
+    <Compile Include="Transport.Http\HttpEndPoint.cs" />
     <Compile Include="Projections\ProjectionDetails.cs" />
     <Compile Include="Projections\QueryManager.cs" />
     <Compile Include="StreamCheckpoint.cs" />
@@ -228,12 +229,16 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
     <PreBuildEvent>
+
 $(MSBuildProjectDirectory)\..\Scripts\version\update-version.cmd $(MSBuildProjectDirectory)
+
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <PreBuildEvent>
+
 $(MSBuildProjectDirectory)\..\Scripts\version\update-version.sh $(MSBuildProjectDirectory)
+
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
