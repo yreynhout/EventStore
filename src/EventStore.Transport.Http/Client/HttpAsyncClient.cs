@@ -152,7 +152,7 @@ namespace EventStore.Transport.Http.Client
                         if (x is HttpRequestException)
                         {
                             var error = x.InnerException != null ? x.InnerException.Message : x.Message;
-                            _log.ErrorException(x, "Error isssuing request to {0}.  Message: {1}", state.Request.RequestUri, error);
+                            _log.ErrorException(x, "Error issuing request to {0}.  Message: {1}", state.Request.RequestUri, error);
 
                             return true;
                         }

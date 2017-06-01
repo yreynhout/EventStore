@@ -36,7 +36,7 @@ namespace EventStore.Core.Services
                                    IHandle<ElectionMessage.Proposal>,
                                    IHandle<ElectionMessage.Accept>
     {
-        private static readonly TimeSpan LeaderElectionProgressTimeout = TimeSpan.FromMilliseconds(1000);
+        private static readonly TimeSpan LeaderElectionProgressTimeout = TimeSpan.FromMilliseconds(5000);
         private static readonly TimeSpan SendViewChangeProofInterval = TimeSpan.FromMilliseconds(5000);
 
         private static readonly ILogger Log = LogManager.GetLoggerFor<ElectionsService>();
