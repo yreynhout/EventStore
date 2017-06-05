@@ -231,6 +231,7 @@ namespace EventStore.Core.Services
 
         private static void ForwardResponse(HttpEntityManager manager, HttpRequestMessage request)
         {
+            try {
             _client.SendAsync(request)
                 .ContinueWith(t =>
                 {
@@ -249,6 +250,9 @@ namespace EventStore.Core.Services
 
                     manager.ForwardReply(response, exc => Log.Debug("Error forwarding response for '{0}': {1}.", manager.RequestedUrl, exc.Message));
                 });
+            } catch(Exception ex) {
+                Log.Error(string.Format("HttpSendService.ForwardResponse: Failed forwarding response to {0}", request.RequestUri), ex);
+            }
         }
     }
 }

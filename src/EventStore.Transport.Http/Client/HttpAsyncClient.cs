@@ -87,6 +87,7 @@ namespace EventStore.Transport.Http.Client
         private void Receive(string method, string url, IEnumerable<KeyValuePair<string, string>> headers,
                              Action<HttpResponse> onSuccess, Action<Exception> onException)
         {
+            try {
             var request = new HttpRequestMessage();
 //MONOCHECK is this still needed?
 #if MONO
@@ -105,11 +106,15 @@ namespace EventStore.Transport.Http.Client
 
             var state = new ClientOperationState(request, onSuccess, onException);
             _client.SendAsync(request).ContinueWith(RequestSent(state));
+            } catch(Exception ex) {
+                _log.Error(string.Format("HttpAsyncClient.Receive: Error receiving from {0}", url), ex);
+            }
         }
 
         private void Send(string method, string url, string body, string contentType, IEnumerable<KeyValuePair<string, string>> headers, 
                              Action<HttpResponse> onSuccess, Action<Exception> onException)
         {
+            try {
             var request = new HttpRequestMessage();
             request.Method = new System.Net.Http.HttpMethod(method);
             request.RequestUri = new Uri(url);
@@ -132,6 +137,9 @@ namespace EventStore.Transport.Http.Client
 
             var state = new ClientOperationState(request, onSuccess, onException);
             _client.SendAsync(request).ContinueWith(RequestSent(state));
+            } catch(Exception ex) {
+                _log.Error(string.Format("HttpAsyncClient.Send: Error sending to {0}", url), ex);
+            }
         }
 
         private Action<Task<HttpResponseMessage>> RequestSent(ClientOperationState state)
