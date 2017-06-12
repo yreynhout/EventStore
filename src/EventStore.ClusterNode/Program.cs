@@ -287,7 +287,8 @@ namespace EventStore.ClusterNode
                     options.IndexCacheDepth,
                     consumerStrategyFactories,
                     options.UnsafeIgnoreHardDelete,
-                    options.BetterOrdering
+                    options.BetterOrdering,
+                    alwaysKeepScavenged: options.AlwaysKeepScavenged
                     );
         }
 

@@ -66,6 +66,7 @@ namespace EventStore.Core.Cluster.Settings
 
         public readonly bool BetterOrdering;
         public readonly string Index;
+        public readonly bool AlwaysKeepScavenged;
 
         public readonly IPersistentSubscriptionConsumerStrategyFactory[] AdditionalConsumerStrategies;
 
@@ -119,7 +120,8 @@ namespace EventStore.Core.Cluster.Settings
                                     int indexCacheDepth = 16,
                                     IPersistentSubscriptionConsumerStrategyFactory[] additionalConsumerStrategies = null,
                                     bool unsafeIgnoreHardDeletes = false,
-                                    bool betterOrdering = false)
+                                    bool betterOrdering = false,
+                                    bool alwaysKeepScavenged = false)
         {
             Ensure.NotEmptyGuid(instanceId, "instanceId");
             Ensure.NotNull(internalTcpEndPoint, "internalTcpEndPoint");
@@ -201,6 +203,8 @@ namespace EventStore.Core.Cluster.Settings
             Index = index;
             UnsafeIgnoreHardDeletes = unsafeIgnoreHardDeletes;
             BetterOrdering = betterOrdering;
+
+            AlwaysKeepScavenged = alwaysKeepScavenged;
         }
 
 
