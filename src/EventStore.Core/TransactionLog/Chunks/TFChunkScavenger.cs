@@ -395,12 +395,6 @@ namespace EventStore.Core.TransactionLog.Chunks
                 return false;
             }
 
-            if (IsLinkToWithDeletedEvent(prepare))
-            {
-                commitInfo.TryNotToKeep();
-                return false;
-            }
-
             var eventNumber = prepare.Flags.HasAnyOf(PrepareFlags.IsCommitted)
                                       ? prepare.ExpectedVersion + 1 // IsCommitted prepares always have explicit expected version
                                       : commitInfo.EventNumber + prepare.TransactionOffset;
@@ -419,6 +413,12 @@ namespace EventStore.Core.TransactionLog.Chunks
                 // Definitely keep commit, otherwise current prepare wouldn't be discoverable.
                 commitInfo.ForciblyKeep();
                 return true;
+            }
+
+            if (IsLinkToWithDeletedEvent(prepare))
+            {
+                commitInfo.TryNotToKeep();
+                return false;
             }
 
             var meta = _readIndex.GetStreamMetadata(prepare.EventStreamId);

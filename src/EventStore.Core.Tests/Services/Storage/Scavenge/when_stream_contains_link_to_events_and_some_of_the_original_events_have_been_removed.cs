@@ -22,10 +22,12 @@ namespace EventStore.Core.Tests.Services.Storage.Scavenge
                                    Rec.Commit(2, "linkTo-Stream"),
                                    Rec.Prepare(3, "linkTo-Stream", eventType: SystemEventTypes.LinkTo, data: Helper.UTF8NoBom.GetBytes("20@test-stream")),
                                    Rec.Commit(3, "linkTo-Stream"),
-                                   Rec.Prepare(4, "test-stream"),
-                                   Rec.Commit(4, "test-stream"),
+                                   Rec.Prepare(4, "linkTo-Stream"),
+                                   Rec.Commit(4, "linkTo-Stream"),
                                    Rec.Prepare(5, "test-stream"),
-                                   Rec.Commit(5, "test-stream"))
+                                   Rec.Commit(5, "test-stream"),
+                                   Rec.Prepare(6, "test-stream"),
+                                   Rec.Commit(6, "test-stream"))
                             .CompleteLastChunk()
                             .CreateDb();
         }
@@ -33,7 +35,7 @@ namespace EventStore.Core.Tests.Services.Storage.Scavenge
         protected override LogRecord[][] KeptRecords(DbResult dbResult)
         {
             return new[] { 
-                dbResult.Recs[0].Where((x, i) => new [] {0, 1, 4, 5, 8, 9, 10, 11}.Contains(i)).ToArray()
+                dbResult.Recs[0].Where((x, i) => new [] {0, 1, 4, 5, 8, 9, 10, 11, 12, 13}.Contains(i)).ToArray()
             };
         }
 
@@ -62,8 +64,10 @@ namespace EventStore.Core.Tests.Services.Storage.Scavenge
         {
             var forward = ReadIndex.ReadStreamEventsForward("linkTo-Stream", 0, 100);
             Assert.AreEqual(ReadStreamResult.Success, forward.Result);
-            Assert.AreEqual(2, forward.Records.Length);
-            Assert.IsTrue(forward.Records.All(x=> x.EventType == SystemEventTypes.LinkTo));
+            Assert.AreEqual(3, forward.Records.Length);
+            Assert.AreEqual(0, forward.Records[0].EventNumber);
+            Assert.AreEqual(2, forward.Records[1].EventNumber);
+            Assert.AreEqual(4, forward.Records[2].EventNumber);
         }
 
         [Test]
@@ -71,16 +75,20 @@ namespace EventStore.Core.Tests.Services.Storage.Scavenge
         {
             var backward = ReadIndex.ReadStreamEventsBackward("linkTo-Stream", -1, 100);
             Assert.AreEqual(ReadStreamResult.Success, backward.Result);
-            Assert.AreEqual(2, backward.Records.Length);
-            Assert.IsTrue(backward.Records.All(x => x.EventType == SystemEventTypes.LinkTo));
+            Assert.AreEqual(3, backward.Records.Length);
+            Assert.AreEqual(4, backward.Records[0].EventNumber);
+            Assert.AreEqual(2, backward.Records[1].EventNumber);
+            Assert.AreEqual(0, backward.Records[2].EventNumber);
         }
 
         [Test]
         public void the_link_to_events_that_still_exist_are_present_physically_reading_forward()
         {
             var forward = ReadIndex.ReadAllEventsForward(new TFPos(0, 0), 1000).Records.Where(x => x.Event.EventStreamId == "linkTo-Stream").ToList();
-            Assert.AreEqual(2, forward.Count);
-            Assert.IsTrue(forward.All(x => x.Event.EventType == SystemEventTypes.LinkTo));
+            Assert.AreEqual(3, forward.Count);
+            Assert.AreEqual(0, forward[0].Event.EventNumber);
+            Assert.AreEqual(2, forward[1].Event.EventNumber);
+            Assert.AreEqual(4, forward[2].Event.EventNumber);
         }
 
         [Test]
@@ -88,8 +96,10 @@ namespace EventStore.Core.Tests.Services.Storage.Scavenge
         {
             var headOfTf = new TFPos(Db.Config.WriterCheckpoint.Read(), Db.Config.WriterCheckpoint.Read());
             var backward = ReadIndex.ReadAllEventsBackward(headOfTf, 1000).Records.Where(x => x.Event.EventStreamId == "linkTo-Stream").ToList();
-            Assert.AreEqual(2, backward.Count);
-            Assert.IsTrue(backward.All(x => x.Event.EventType == SystemEventTypes.LinkTo));
+            Assert.AreEqual(3, backward.Count);
+            Assert.AreEqual(4, backward[0].Event.EventNumber);
+            Assert.AreEqual(2, backward[1].Event.EventNumber);
+            Assert.AreEqual(0, backward[2].Event.EventNumber);
         }
     }
 }

@@ -677,6 +677,7 @@
     <Compile Include="Services\Storage\Scavenge\when_stream_contains_link_to_events_and_some_of_the_original_events_have_been_removed.cs" />
     <Compile Include="Services\Storage\Scavenge\when_stream_contains_link_to_event_that_points_to_an_event_that_still_exists.cs" />
     <Compile Include="Services\Storage\Scavenge\when_stream_contains_link_to_event_that_points_to_an_event_that_no_longer_exists.cs" />
+    <Compile Include="Services\Storage\Scavenge\when_last_event_in_stream_is_a_link_to_that_points_to_an_event_that_no_longer_exists.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EventStore.ClientAPI.Embedded\EventStore.ClientAPI.Embedded.csproj">
